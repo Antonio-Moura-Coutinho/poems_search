@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poem Search</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: black;
+            overflow: hidden;
+        }
+
+        .search-container {
+            position: fixed;
+            top: 65%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .search-input {
+            width: 400px;
+            height: 100px;
+            padding: 0 15px;
+            background-color: #000000;
+            font-size: 50px;
+            color: #ffffff;
+            border: 1px solid #757575;
+            border-radius: 25px;
+            outline: none;
+            caret-color: #0863ff;
+        }
+
+        .search-input::placeholder {
+            color: #646464;
+        }
+
+        .search-input:focus {
+            border-color: #ffffff;
+        }
+
+        .search-button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 60px;
+            cursor: pointer;
+            font-size: 40px;
+
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {background-color: #ddd;}
+
+        .dropdown:hover .dropdown-content {display: block;}
+
+        .dropdown:hover .search-button {background-color: #0056b3;}
+
+        nav {
+            background-color: #202020;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        header {
+            background-color: #f8f8f800;
+            width: 40%;
+        }
+		#emotion-vector {
+            color: #ffffff;
+            font-size: 24px;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="english.html">About</a></li>
+                <li><a href="happy.html">Contact</a></li>
+                <li><a href="results.html">Results</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="search-container">
+        <input type="text" id="search-input" class="search-input" placeholder="你好吗 ?" onkeypress="handleKeyPress(event)" />
+        <div class="dropdown">
+            <button class="search-button"> <img src="images/lupa.png " width="50px" height="45px" alt="search"> </button>
+            <div class="dropdown-content">
+                <a href="#" onclick="sendSearchQuery('title')">Search by Title</a>
+                <a href="#" onclick="sendSearchQuery('author')">Search by Author</a>
+                <a href="#" onclick="sendSearchQuery('emotion')">Search by Emotion</a>
+            </div>
+        </div>
+    </div>
+
+	<div id="emotion-vector"></div>
+
+	<script type="importmap">
+		{
+		  "imports": {
+			"three": "./three.js-dev/build/three.module.js",
+			"three/addons/": "./three.js-dev/examples/jsm/"
+		  }
+		}
+	</script>
+    <script type="module" src="faceControl.js"></script>
+    <script type="module">
+        import { init, moveFaceComponent } from './faceControl.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+        });
+
+    </script>
+    <script type="module" src="searchControl.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poem Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #poem-container {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            max-height: 60%;
+            overflow-y: auto;
+        }
+
+        #poem-text {
+            font-size: 2em;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        #navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .back-button {
+            background-color: #555;
+        }
+
+        #face-container {
+            position: absolute;
+            top: -200px;
+            left: 50%;
+            z-index: -1;
+            transform: translateX(-50%);
+        }
+
+        #emotion-vector-container {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background-color: #202020;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #emotion-vector-container h3 {
+            margin: 0 0 10px;
+            font-size: 1.2em;
+        }
+
+        #emotion-vector-container ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #emotion-vector-container li {
+            margin: 5px 0;
+        }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./three.js-dev/build/three.module.js",
+                "three/addons/": "./three.js-dev/examples/jsm/"
+            }
+        }
+    </script>
+    
+    <script type="module" src="results.js"></script>
+<body>
+    <div id="poem-container">
+        <p id="poem-text">Loading...</p>
+    </div>
+    <div id="emotion-vector-container">
+        <h3>Emotion Vector</h3>
+    </div>
+    <div id="navigation">
+        <button id="prevPoem">Previous Poem</button>
+        <button id="nextPoem">Next Poem</button>
+        <button id="backToSearch" class="back-button">Back to Search</button>
+    </div>
+</body>
+</html>

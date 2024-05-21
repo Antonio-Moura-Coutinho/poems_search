@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteRule ^index\.html$ /welcome.html [R=301,L]
+
+ErrorDocument 404 /notfound.html
+

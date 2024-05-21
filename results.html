@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poem Results</title>
+    <style>
+        body { margin: 0; background-color: black; overflow: hidden; }
+#face-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+#poem-text { position: absolute; top: 10px; left: 10px; color: white; font-size: 1.2em;display: none; }
+#emotion-vector-container {
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 300px;
+    font-family:'Times New Roman', Times, serif
+}
+#controls { position: absolute; bottom: 10px; left: 10px; color: white; }
+button {
+    background-color:rgb(69, 149, 247);
+    color: rgb(254, 255, 255);
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+        
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./three.js-dev/build/three.module.js",
+                "three/addons/": "./three.js-dev/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module" src="results.js"></script>
+</head>
+<body>
+    <div id="face-container"></div>
+    <div id="poem-text"></div>
+    <div id="emotion-vector-container"></div>
+    <div id="controls">
+        <button id="prevPoem">Previous</button>
+        <button id="nextPoem">Next</button>
+        <button id="backToSearch">Back to Search</button>
+        <button id="scrollUp">Scroll Up</button>
+        <button id="scrollDown">Scroll Down</button>
+    </div>
+</body>
+</html>

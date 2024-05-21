@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poem Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #poem-container {
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            max-height: 60%;
+            overflow-y: auto;
+        }
+
+        #poem-text {
+            font-size: 2em;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        #navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .back-button {
+            background-color: #555;
+        }
+
+        #face-container {
+            position: absolute;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #emotion-vector-container {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background-color: #202020;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #emotion-vector-container h3 {
+            margin: 0 0 10px;
+            font-size: 1.2em;
+        }
+
+        #emotion-vector-container ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #emotion-vector-container li {
+            margin: 5px 0;
+        }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "./three.js-dev/build/three.module.js",
+                "three/addons/": "./three.js-dev/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+        import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
+        import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+
+        let camera, scene, renderer, controls;
+        let poemMesh, font;
+        let currentPoemIndex = 0;
+
+        const poemsData = JSON.parse(localStorage.getItem('poems')) || [
+            'No poems available. Please go back and search again.'
+        ];
+
+        const emotionVectorData = JSON.parse(localStorage.getItem('emotion_vector')) || [];
+
+        const emotions = [
+            'Happy',
+            'Sad',
+            'Angry',
+            'Surprised',
+            'Disgusted',
+            'Fearful',
+            'Neutral'
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            animate();
+            setupNavigation();
+            displayEmotionVector();
+        });
+
+        function setupNavigation() {
+            document.getElementById('nextPoem').addEventListener('click', () => showNextPoem());
+            document.getElementById('prevPoem').addEventListener('click', () => showPreviousPoem());
+            document.getElementById('backToSearch').addEventListener('click', () => window.location.href = 'index.html');
+        }
+
+        function init() {
+            const faceContainer = document.createElement('div');
+            faceContainer.id = 'face-container';
+            document.body.appendChild(faceContainer);
+
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            faceContainer.appendChild(renderer.domElement);
+
+            controls = new OrbitControls(camera, renderer.domElement);
+
+            const loader = new FontLoader();
+            loader.load('fonts/helvetiker_regular.typeface.json', function (loadedFont) {
+                font = loadedFont;
+                changePoem(poemsData[currentPoemIndex]);
+            });
+
+            loadFaceModel();
+
+            const ambientLight = new THREE.AmbientLight(0x404040, 7);
+            scene.add(ambientLight);
+
+            const lightFace = new THREE.DirectionalLight(0xfffff, 7);
+            lightFace.position.set(1, 4, 2);
+            scene.add(lightFace);
+
+            const textLight = new THREE.DirectionalLight(0xffffff, 9);
+            textLight.position.set(1, -9, 2);
+            scene.add(textLight);
+        }
+
+        function loadFaceModel() {
+            const ktx2Loader = new KTX2Loader()
+                .setTranscoderPath('jsm/libs/basis/')
+                .detectSupport(renderer);
+
+            const gltfLoader = new GLTFLoader()
+                .setKTX2Loader(ktx2Loader)
+                .setMeshoptDecoder(MeshoptDecoder);
+
+            gltfLoader.load('models/gltf/facecap.glb', function (gltf) {
+                const faceMesh = gltf.scene.children[0];
+                faceMesh.position.set(0, 0, 0);
+                faceMesh.scale.set(9, 9, 9);
+                faceMesh.rotation.x = Math.PI / 11;
+                scene.add(faceMesh);
+
+                faceMesh.traverse(function (child) {
+                    if (child.isMesh) {
+                        child.material.color.set(0x81C8D8);
+                    }
+                });
+            }, undefined, function (error) {
+                console.error('An error happened with the GLTF loader:', error);
+            });
+        }
+
+        function changePoem(text) {
+            if (poemMesh) {
+                scene.remove(poemMesh);
+            }
+
+            const geometry = new TextGeometry(text, {
+                font: font,
+                size: 0.3,
+                height: 0.1,
+            });
+            const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+            poemMesh = new THREE.Mesh(geometry, material);
+            poemMesh.position.set(-3, -2, 0);
+            scene.add(poemMesh);
+        }
+
+        function showNextPoem() {
+            currentPoemIndex = (currentPoemIndex + 1) % poemsData.length;
+            changePoem(poemsData[currentPoemIndex]);
+        }
+
+        function showPreviousPoem() {
+            currentPoemIndex = (currentPoemIndex - 1 + poemsData.length) % poemsData.length;
+            changePoem(poemsData[currentPoemIndex]);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        function displayEmotionVector() {
+    const emotionVectorData = JSON.parse(localStorage.getItem('emotion_vector')) || [];
+    const emotionContainer = document.getElementById('emotion-vector-container');
+
+    if (!emotionContainer) {
+        console.error("Emotion vector container not found");
+        return;
+    }
+
+    if (!Array.isArray(emotionVectorData) || emotionVectorData.length === 0) {
+        console.error("Invalid emotion vector data:", emotionVectorData);
+        emotionContainer.innerHTML = "<p>No emotion data available.</p>";
+        return;
+    }
+
+    const ul = document.createElement('ul');
+    emotionVectorData.forEach((value, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${emotions[index]}: ${value}`;
+        ul.appendChild(li);
+    });
+
+    emotionContainer.innerHTML = ''; // Clear previous content
+    emotionContainer.appendChild(ul);
+}
+
+        
+        
+        
+    </script>
+</head>
+<body>
+    <div id="poem-container">
+        <p id="poem-text">Loading...</p>
+    </div>
+    <div id="emotion-vector-container">
+        <h3>Emotion Vector</h3>
+    </div>
+    <div id="navigation">
+        <button id="prevPoem">Previous Poem</button>
+        <button id="nextPoem">Next Poem</button>
+        <button id="backToSearch" class="back-button">Back to Search</button>
+    </div>
+
+</body>
+</html>
