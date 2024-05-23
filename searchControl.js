@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById("search-input");
-
+    const backendUrl = 'https://poems-backend-fbe3c465d5f2.herokuapp.com';
     function searchPoems(searchType) {
         const query = searchInput.value;
         let endpoint = "/classify_poem";
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
             endpoint = "/find_by_title";
         }
 
-        fetch(`http://127.0.0.1:5000${endpoint}`, {
+        fetch(`${backendUrl}${endpoint}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ query: query }),

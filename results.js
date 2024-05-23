@@ -27,6 +27,24 @@ const emotionColors = {
     'Loneliness': '#4b0082',
     'Nostalgia': '#ff6347'
 };
+const baseExpression = {
+    'Happiness': { indices: [0, 3, 4, 37, 38], intensity: [0.4, 0.4, 0.4, 0.6, 0.6] },
+    'Sadness': { indices: [1, 2, 39, 40], intensity: [0.4, 0.4, 0.6, 0.6] },
+    'Fear': { indices: [5, 6, 17, 18, 24], intensity: [0.3, 0.3, 0.4, 0.4, 0.2] },
+    'Disgust': { indices: [22, 23, 45, 46], intensity: [0.4, 0.4, 0.3, 0.3] },
+    'Anger': { indices: [1, 2, 39, 40], intensity: [0.5, 0.5, 0.4, 0.4] },
+    'Surprise': { indices: [0, 3, 4, 17, 18], intensity: [0.6, 0.5, 0.5, 0.5, 0.5] },
+    'Anticipation': { indices: [0, 3, 4, 37, 38], intensity: [0.3, 0.3, 0.3, 0.3, 0.3] },
+    'Trust': { indices: [0, 3, 4, 37, 38], intensity: [0.3, 0.3, 0.3, 0.3, 0.3] },
+    'Guilt': { indices: [1, 2, 39, 40, 45, 46], intensity: [0.3, 0.3, 0.3, 0.3, 0.3, 0.3] },
+    'Love': { indices: [0, 3, 4, 37, 38], intensity: [0.4, 0.4, 0.4, 0.4, 0.4] },
+    'Saudade': { indices: [1, 2, 39, 40], intensity: [0.2, 0.2, 0.2, 0.2] },
+    'Envy': { indices: [0, 1, 2, 39, 40], intensity: [0.3, 0.3, 0.3, 0.3, 0.3] },
+    'Bittersweetness': { indices: [0, 1, 2, 37, 38], intensity: [0.3, 0.3, 0.3, 0.3, 0.3] },
+    'Loneliness': { indices: [1, 2, 39, 40], intensity: [0.4, 0.4, 0.4, 0.4] },
+    'Nostalgia': { indices: [0, 3, 4, 37, 38, 45, 46], intensity: [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3] }
+};
+
 
 const resultsData = JSON.parse(localStorage.getItem('results')) || [{
     poem: 'No poems available. Please go back and search again.',
@@ -140,7 +158,7 @@ function changePoem(text) {
 
     const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
     poemMesh = new THREE.Mesh(geometry, material);
-    poemMesh.position.set(-2, 1, 0);
+    poemMesh.position.set(-2, 3, -3);
     poemMesh.rotation.y = -0.3; 
     scene.add(poemMesh);
 }
@@ -181,12 +199,9 @@ function displayEmotionVector(vector) {
 
         const label = document.createElement('div');
         label.classList.add('emotion-label');
-        label.textContent = emotion;
+        label.textContent = `${emotion}: ${value.toFixed(2) * 100}%`;
 
-        const valueDisplay = document.createElement('div');
-        valueDisplay.classList.add('emotion-value');
-        valueDisplay.textContent = value.toFixed(2);
-
+        
         const barBg = document.createElement('div');
         barBg.classList.add('emotion-bar-bg');
 
@@ -197,7 +212,6 @@ function displayEmotionVector(vector) {
 
         barBg.appendChild(barFill);
         barContainer.appendChild(label);
-        barContainer.appendChild(valueDisplay);
         barContainer.appendChild(barBg);
         emotionContainer.appendChild(barContainer);
     });
@@ -208,32 +222,19 @@ function displayEmotionVector(vector) {
     }
 }
 
-function adjustFaceExpression(emotion, intensity) {
+function interpolateExpression(emotion, intensity) {
     const influences = faceHead.morphTargetInfluences;
-    const influenceMap = {
-        'Happiness': {0: 0.4, 3: 0.4, 4: 0.4, 37: 0.6, 38: 0.6},
-        'Sadness': {1: 0.4, 2: 0.4, 39: 0.6, 40: 0.6},
-        'Fear': {5: 0.3, 6: 0.3, 17: 0.4, 18: 0.4, 24: 0.2},
-        'Disgust': {22: 0.4, 23: 0.4, 45: 0.3, 46: 0.3},
-        'Anger': {1: 0.5, 2: 0.5, 39: 0.4, 40: 0.4},
-        'Surprise': {0: 0.6, 3: 0.5, 4: 0.5, 17: 0.5, 18: 0.5},
-        'Anticipation': {0: 0.3, 3: 0.3, 4: 0.3, 37: 0.3, 38: 0.3},
-        'Trust': {0: 0.3, 3: 0.3, 4: 0.3, 37: 0.3, 38: 0.3},
-        'Guilt': {1: 0.3, 2: 0.3, 39: 0.3, 40: 0.3, 45: 0.3, 46: 0.3},
-        'Love': {0: 0.4, 3: 0.4, 4: 0.4, 37: 0.4, 38: 0.4},
-        'Saudade': {1: 0.2, 2: 0.2, 39: 0.2, 40: 0.2},
-        'Envy': {0: 0.3, 1: 0.3, 2: 0.3, 39: 0.3, 40: 0.3},
-        'Bittersweetness': {0: 0.3, 1: 0.3, 2: 0.3, 37: 0.3, 38: 0.3},
-        'Loneliness': {1: 0.4, 2: 0.4, 39: 0.4, 40: 0.4},
-        'Nostalgia': {0: 0.3, 3: 0.3, 4: 0.3, 37: 0.3, 38: 0.3, 45: 0.3, 46: 0.3}
-    };
+    influences.fill(0); // Reset all influences
 
-    influences.fill(0); // Reset influences
-
-    Object.entries(influenceMap[emotion]).forEach(([index, value]) => {
-        influences[index] = value * intensity;
+    const emotionData = baseExpression[emotion];
+    emotionData.indices.forEach((index, idx) => {
+        influences[index] = emotionData.intensity[idx] * intensity;
     });
 }
+function adjustFaceExpression(emotion, intensity) {
+    interpolateExpression(emotion, intensity);
+}
+
 
 function scrollPoem(direction) {
     if (direction === 'up') {
