@@ -148,9 +148,23 @@ function changePoem(text) {
         scene.remove(poemMesh);
     }
 
-    const geometry = new TextGeometry(text, {
+    const maxWordsPerLine = 10;
+    const punctuationRegex = /[,:.!?;]/;
+    const words = text.split(' ');
+    let formattedText = '';
+    let currentLine = '';
+
+    words.forEach((word, index) => {
+        currentLine += word + ' ';
+        if (punctuationRegex.test(word) || currentLine.split(' ').length >= maxWordsPerLine || index === words.length - 1) {
+            formattedText += currentLine.trim() + '\n';
+            currentLine = '';
+        }
+    });
+
+    const geometry = new TextGeometry(formattedText.trim(), {
         font: font,
-        size: 0.2, 
+        size: 0.2,
         height: 0.02,
         curveSegments: 12,
         bevelEnabled: false
@@ -159,7 +173,7 @@ function changePoem(text) {
     const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
     poemMesh = new THREE.Mesh(geometry, material);
     poemMesh.position.set(-2, 3, -3);
-    poemMesh.rotation.y = -0.3; 
+    poemMesh.rotation.y = -0.3;
     scene.add(poemMesh);
 }
 
