@@ -20,6 +20,7 @@
     font-family:'Times New Roman', Times, serif
 }
 #controls { position: absolute; bottom: 10px; left: 10px; color: white; }
+#interpretPoemButton { position: absolute; top: 10px; right: 10px; z-index: 100; }
 button {
     background-color:rgb(69, 149, 247);
     color: rgb(254, 255, 255);
@@ -29,6 +30,45 @@ button {
     border-radius: 5px;
     cursor: pointer;
 }
+/* Modal Styles */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+
 
 
 </style>
@@ -47,6 +87,7 @@ button {
     
 </head>
 <body>
+    <button id="interpretPoemButton">Interpret Poem</button>
     <div id="face-container"></div>
     <div id="poem-text"></div>
    
@@ -57,6 +98,14 @@ button {
         <button id="backToSearch">Back to Search</button>
         <button id="scrollUp">Scroll Up</button>
         <button id="scrollDown">Scroll Down</button>
+    </div>
+    
+
+    <div id="interpretationModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="interpretationText">Poem interpretation will be displayed here...</p>
+        </div>
     </div>
 </body>
 </html>

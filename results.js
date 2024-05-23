@@ -63,6 +63,8 @@ document.addEventListener('DOMContentLoaded', () => {
     animate();
     setupNavigation();
     displayPoem();
+    setupInterpretationButton();
+
 });
 
 function setupNavigation() {
@@ -114,6 +116,7 @@ function init() {
     const textLight = new THREE.DirectionalLight(0xffffff, 9);
     textLight.position.set(1, -9, 2);
     scene.add(textLight);
+    
 }
 
 function loadFaceModel() {
@@ -305,3 +308,40 @@ function changeTitle(title){
     titleMesh.rotation.y = -0.3;
     scene.add(titleMesh);
 }
+function setupInterpretationButton() {
+    const interpretButton = document.getElementById('interpretPoemButton');
+    const modal = document.getElementById('interpretationModal');
+    const closeButton = document.getElementsByClassName('close')[0];
+
+    interpretButton.addEventListener('click', async () => {
+        const poem = resultsData[currentPoemIndex].poem;
+        const interpretation = await getPoemInterpretation(poem);
+        document.getElementById('interpretationText').textContent = interpretation;
+        modal.style.display = 'block';
+    });
+
+    closeButton.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+}
+
+async function getPoemInterpretation(poem) {
+    const backendUrl = 'https://poems-backend-fbe3c465d5f2.herokuapp.com';
+    //const backendUrl = 'http://127.0.0.1:5000';
+    const response = await fetch(`${backendUrl}/get_poem_interpretation`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({poem: poem })
+    });
+    const data = await response.json();
+    return data.interpretation;
+}
+
