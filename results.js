@@ -7,7 +7,7 @@ import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 let camera, scene, renderer, controls, mixer, clock;
-let poemMesh, font, faceMesh, faceHead;
+let poemMesh, font, faceMesh, faceHead, poetMesh, titleMesh;
 let currentPoemIndex = 0;
 
 const emotionColors = {
@@ -48,7 +48,8 @@ const baseExpression = {
 
 const resultsData = JSON.parse(localStorage.getItem('results')) || [{
     poem: 'No poems available. Please go back and search again.',
-    emotion_vector: []
+    emotion_vector: [],
+    poet: 'No Poet'
 }];
 
 const emotions = [
@@ -97,6 +98,8 @@ function init() {
     loader.load('fonts/helvetiker_regular.typeface.json', function (loadedFont) {
         font = loadedFont;
         changePoem(resultsData[currentPoemIndex].poem);
+        changePoet(resultsData[currentPoemIndex].poet);
+        changeTitle(resultsData[currentPoemIndex].title);
     });
 
     loadFaceModel();
@@ -200,6 +203,9 @@ function displayPoem() {
     poemText.textContent = resultsData[currentPoemIndex].poem;
     displayEmotionVector(resultsData[currentPoemIndex].emotion_vector);
     changePoem(resultsData[currentPoemIndex].poem);
+    changePoet(resultsData[currentPoemIndex].poet);
+    changeTitle(resultsData[currentPoemIndex].title);
+
 }
 
 function displayEmotionVector(vector) {
@@ -256,4 +262,42 @@ function scrollPoem(direction) {
     } else if (direction === 'down') {
         poemMesh.position.y -= 0.5;
     }
+}
+
+function changePoet(poet){
+    if (poetMesh) {
+        scene.remove(poetMesh);
+    }
+    
+    const geometry = new TextGeometry('Poet:  ' + poet, {
+        font: font,
+        size: 0.05,
+        height: 0.01,
+        curveSegments: 5,
+        bevelEnabled: false
+    });
+    const material = new THREE.MeshStandardMaterial({ color: 0x81C8D8 });
+    poetMesh = new THREE.Mesh(geometry, material);
+    poetMesh.position.set(-1.6, 0, 4);
+    poetMesh.rotation.y = 0.7;
+    scene.add(poetMesh);
+}
+
+function changeTitle(title){
+    if (titleMesh) {
+        scene.remove(titleMesh);
+    }
+    
+    const geometry = new TextGeometry(title, {
+        font: font,
+        size: 0.2,
+        height: 0.02,
+        curveSegments: 12,
+        bevelEnabled: false
+    });
+    const material = new THREE.MeshStandardMaterial({ color: 0x81C8D8 });
+    titleMesh = new THREE.Mesh(geometry, material);
+    titleMesh.position.set(-2, 4, -3);
+    titleMesh.rotation.y = -0.3;
+    scene.add(titleMesh);
 }

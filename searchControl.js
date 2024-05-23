@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById("search-input");
     const backendUrl = 'https://poems-backend-fbe3c465d5f2.herokuapp.com';
+    //const backendUrl = 'http://127.0.0.1:5000';
     function searchPoems(searchType) {
         const query = searchInput.value;
         let endpoint = "/classify_poem";
@@ -10,8 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
             endpoint = "/classify_poem"; // Assuming different handling for emotion can be added later
         } else if (searchType === 'title') {
             endpoint = "/find_by_title";
-        }
-
+        } 
         fetch(`${backendUrl}${endpoint}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
