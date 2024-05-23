@@ -183,11 +183,13 @@ function changePoem(text) {
 function showNextPoem() {
     currentPoemIndex = (currentPoemIndex + 1) % resultsData.length;
     displayPoem();
+    camera.position.set(0, 0, 5);
 }
 
 function showPreviousPoem() {
     currentPoemIndex = (currentPoemIndex - 1 + resultsData.length) % resultsData.length;
     displayPoem();
+    camera.position.set(0, 0, 5);
 }
 
 function animate() {
@@ -259,8 +261,10 @@ function adjustFaceExpression(emotion, intensity) {
 function scrollPoem(direction) {
     if (direction === 'up') {
         poemMesh.position.y += 0.5;
+        titleMesh.position.y += 0.5;
     } else if (direction === 'down') {
         poemMesh.position.y -= 0.5;
+        titleMesh.position.y -= 0.5;
     }
 }
 
