@@ -29,19 +29,10 @@ button {
     border-radius: 5px;
     cursor: pointer;
 }
-.circle-btn {
-    border-radius: 50%; /* Circular shape */
-    width: 50px; /* Circle size */
-    height: 50px;
-    text-align: center;
-    vertical-align: middle;
-    line-height: 50px; /* Align text vertically */
-    border: none;
-    background-color: #4CAF50; /* Green background */
-    color: white;
-    cursor: pointer;
-}
-        
+
+
+</style>
+    
     </style>
     <script type="importmap">
         {
@@ -66,35 +57,6 @@ button {
         <button id="backToSearch">Back to Search</button>
         <button id="scrollUp">Scroll Up</button>
         <button id="scrollDown">Scroll Down</button>
-        <button id="interpretButton" class="circle-btn">Interpret Poem</button>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const backendUrl = 'https://poems-backend-fbe3c465d5f2.herokuapp.com';
-        
-                function interpretPoem() {
-                    const poemText = document.getElementById('poem-text').textContent;
-                    fetch(`${backendUrl}/interpret_poem`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        debug: true,
-                        body: JSON.stringify({ poem: poemText })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok ' + response.statusText);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        document.getElementById('interpretationDisplay').textContent = data.interpretation;
-                    })
-                    .catch(error => console.error('Error:', error));
-                }
-        
-                document.getElementById('interpretButton').addEventListener('click', interpretPoem);
-            });
-            
-            </script>
     </div>
 </body>
 </html>
