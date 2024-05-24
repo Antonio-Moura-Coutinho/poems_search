@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
             endpoint = "/classify_poem"; // Assuming different handling for emotion can be added later
         } else if (searchType === 'title') {
             endpoint = "/find_by_title";
-        } 
+        }
+        loadingIndicator.style.display = 'block';
         fetch(`${backendUrl}${endpoint}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },

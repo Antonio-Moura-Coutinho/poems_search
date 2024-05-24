@@ -21,6 +21,8 @@
 }
 #controls { position: absolute; bottom: 10px; left: 10px; color: white; }
 #interpretPoemButton { position: absolute; top: 10px; right: 10px; z-index: 100; }
+#scrollUp { position: absolute; top: 60px; right: 10px; }
+#scrollDown { position: absolute; bottom: 10px; right: 10px; }
 button {
     background-color:rgb(69, 149, 247);
     color: rgb(254, 255, 255);
@@ -40,31 +42,48 @@ button {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgb(0,0,0);
     background-color: rgba(0,0,0,0.4);
     padding-top: 60px;
 }
 
 .modal-content {
-    background-color: #fefefe;
+    background-color: rgb(69, 149, 247);
+    color: white;
     margin: 5% auto;
     padding: 20px;
-    border: 1px solid #888;
+    border-radius: 40px;
     width: 80%;
 }
 
 .close {
-    color: #aaa;
+    color: #ffffffe8;
     float: right;
     font-size: 28px;
     font-weight: bold;
+
 }
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: rgb(229, 1, 1);
     text-decoration: none;
     cursor: pointer;
+}
+.loading {
+    display: none;
+    width: 300px;
+    height: 300px;
+    border: 100px solid rgba(22, 255, 6, 0.773);
+    border-radius: 50%;
+    border-top-color: #000;
+    animation: spin 1s ease-in-out infinite;
+    z-index: 100;
+    position: absolute;
+    align-items: center;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 
@@ -96,9 +115,9 @@ button {
         <button id="prevPoem">Previous</button>
         <button id="nextPoem">Next</button>
         <button id="backToSearch">Back to Search</button>
-        <button id="scrollUp">Scroll Up</button>
-        <button id="scrollDown">Scroll Down</button>
     </div>
+    <button id="scrollUp" class="arrow-button">&#9650;</button>
+    <button id="scrollDown" class="arrow-button">&#9660;</button>
     
 
     <div id="interpretationModal" class="modal">
@@ -107,5 +126,7 @@ button {
             <p id="interpretationText">Poem interpretation will be displayed here...</p>
         </div>
     </div>
+    <div id="loadingIndicator" class="loading"></div>
+
 </body>
 </html>

@@ -119,6 +119,21 @@
             text-align: center;
             margin-top: 20px;
         }
+        .loading {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(22, 255, 6, 0.773);
+            border-radius: 50%;
+            border-top-color: #000;
+            animation: spin 1s ease-in-out infinite;
+            z-index: 100;
+            left: 20%;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -135,6 +150,7 @@
     </div>
 
 	<div id="emotion-vector"></div>
+    <div id="loadingIndicator" class="loading">Loading...</div>
 
 	<script type="importmap">
 		{

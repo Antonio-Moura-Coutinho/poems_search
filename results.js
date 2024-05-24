@@ -6,6 +6,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
+
 let camera, scene, renderer, controls, mixer, clock;
 let poemMesh, font, faceMesh, faceHead, poetMesh, titleMesh;
 let currentPoemIndex = 0;
@@ -312,11 +313,15 @@ function setupInterpretationButton() {
     const interpretButton = document.getElementById('interpretPoemButton');
     const modal = document.getElementById('interpretationModal');
     const closeButton = document.getElementsByClassName('close')[0];
+    let format_text 
+    
 
     interpretButton.addEventListener('click', async () => {
         const poem = resultsData[currentPoemIndex].poem;
         const interpretation = await getPoemInterpretation(poem);
-        document.getElementById('interpretationText').textContent = interpretation;
+        format_text = interpretation.replace(/(?:\r\n|\r|\n)/g, '<br>');
+        
+        document.getElementById('interpretationText').innerHTML = format_text;
         modal.style.display = 'block';
     });
 
@@ -334,6 +339,7 @@ function setupInterpretationButton() {
 async function getPoemInterpretation(poem) {
     const backendUrl = 'https://poems-backend-fbe3c465d5f2.herokuapp.com';
     //const backendUrl = 'http://127.0.0.1:5000';
+    loadingIndicator.style.display = 'block';
     const response = await fetch(`${backendUrl}/get_poem_interpretation`, {
         method: 'POST',
         headers: {
@@ -342,6 +348,6 @@ async function getPoemInterpretation(poem) {
         body: JSON.stringify({poem: poem })
     });
     const data = await response.json();
+    loadingIndicator.style.display = 'none';
     return data.interpretation;
 }
-
