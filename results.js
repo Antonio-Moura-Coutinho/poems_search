@@ -254,11 +254,11 @@ function adjustFaceExpression(emotion, intensity) {
 
 function scrollPoem(direction) {
     if (direction === 'up') {
-        poemMesh.position.y += 0.5;
-        titleMesh.position.y += 0.5;
-    } else if (direction === 'down') {
         poemMesh.position.y -= 0.5;
         titleMesh.position.y -= 0.5;
+    } else if (direction === 'down') {
+        poemMesh.position.y += 0.5;
+        titleMesh.position.y += 0.5;
     }
 }
 
