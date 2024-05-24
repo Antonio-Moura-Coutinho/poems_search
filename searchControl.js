@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById("search-input");
-    //const backendUrl = 'https://poems-backend-fbe3c465d5f2.herokuapp.com';
-    const backendUrl = 'http://127.0.0.1:5000';
+    const backendUrl = 'https://poems-backend-fbe3c465d5f2.herokuapp.com';
+    //const backendUrl = 'http://127.0.0.1:5000';
     function searchPoems(searchType) {
         const query = searchInput.value;
         let endpoint = "/classify_poem";
