@@ -98,12 +98,14 @@ function init() {
     clock = new THREE.Clock();
 
     const loader = new FontLoader();
-    loader.load('fonts/helvetiker_regular.typeface.json', function (loadedFont) {
+    
+    loader.load('ZCOOL XiaoWei_Regular.json', function (loadedFont) {
         font = loadedFont;
         changePoem(resultsData[currentPoemIndex].poem);
         changePoet(resultsData[currentPoemIndex].poet);
         changeTitle(resultsData[currentPoemIndex].title);
     });
+    
 
     loadFaceModel();
 
@@ -154,22 +156,10 @@ function changePoem(text) {
     if (poemMesh) {
         scene.remove(poemMesh);
     }
+    console.log(text);
 
-    const maxWordsPerLine = 10;
-    const punctuationRegex = /[,:.!?;]/;
-    const words = text.split(' ');
-    let formattedText = '';
-    let currentLine = '';
 
-    words.forEach((word, index) => {
-        currentLine += word + ' ';
-        if (punctuationRegex.test(word) || currentLine.split(' ').length >= maxWordsPerLine || index === words.length - 1) {
-            formattedText += currentLine.trim() + '\n';
-            currentLine = '';
-        }
-    });
-
-    const geometry = new TextGeometry(formattedText.trim(), {
+    const geometry = new TextGeometry(text.trim(), {
         font: font,
         size: 0.2,
         height: 0.02,
